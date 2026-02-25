@@ -4,7 +4,7 @@ import java.util.Arrays;
 * Defines a library of selection methods.
 * on arrays of ints.
 *
-* @author   YOUR NAME (YOU@auburn.edu)
+* @author   YOUR NAME 
 * @author   Michael Mann 
 * @version  01/13/2026
 *
