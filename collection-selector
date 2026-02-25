@@ -1,0 +1,412 @@
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+/**
+ * Defines a library of selection methods on Collections.
+ *
+ * @author Michael Mann (mgm0036@auburn.edu)
+ * @version 01/20/2026
+ *
+ */
+public final class Selector {
+
+/**
+* Can't instantiate this class.
+*
+* D O   N O T   C H A N G E   T H I S   C O N S T R U C T O R
+*
+*/
+   private Selector() { }
+
+
+   /**
+    * Returns the minimum value in the Collection coll as defined by the
+    * Comparator comp. If either coll or comp is null, this method throws an
+    * IllegalArgumentException. If coll is empty, this method throws a
+    * NoSuchElementException. This method will not change coll in any way.
+    *
+    * @param coll    the Collection from which the minimum is selected
+    * @param comp    the Comparator that defines the total order on T
+    * @return        the minimum value in coll
+    * @throws        IllegalArgumentException as per above
+    * @throws        NoSuchElementException as per above
+    */
+   public static <T> T min(Collection<T> coll, Comparator<T> comp) {
+      // throw is coll or comp is null
+      if (coll == null || comp == null) {
+         throw new IllegalArgumentException(
+              "coll or comp must not be null");   
+      }
+      // throw if coll is empty
+      if (coll.size() == 0) {
+         throw new NoSuchElementException(
+               "coll must not be empty");
+      }
+      
+      T min = coll.iterator().next();
+      
+      for (T element: coll) {
+         if (comp.compare(element, min) < 0) {
+            min = element;
+         }
+      }
+      return min;
+   }
+
+
+   /**
+    * Selects the maximum value in the Collection coll as defined by the
+    * Comparator comp. If either coll or comp is null, this method throws an
+    * IllegalArgumentException. If coll is empty, this method throws a
+    * NoSuchElementException. This method will not change coll in any way.
+    *
+    * @param coll    the Collection from which the maximum is selected
+    * @param comp    the Comparator that defines the total order on T
+    * @return        the maximum value in coll
+    * @throws        IllegalArgumentException as per above
+    * @throws        NoSuchElementException as per above
+    */
+   public static <T> T max(Collection<T> coll, Comparator<T> comp) {
+     // throw if coll or comp is null
+      if (coll == null || comp == null) {
+         throw new IllegalArgumentException(
+               "coll or comp must not be null");         
+      }
+     // throw if coll is empty **use .size() since Collection, not .length**
+      if (coll.size() == 0) {
+         throw new NoSuchElementException(
+               "coll must not be size 0");
+      }
+     
+     // Collections use iterators to scan elements
+     // Need iterator to grab first element
+      T max = coll.iterator().next();
+     
+     // Now a simple for each loop on Type variable
+      for (T element: coll) {
+         if (comp.compare(element, max) > 0) {
+            max = element;
+         }
+      }
+      return max;
+   }
+
+
+   /**
+    * Selects the kth minimum value from the Collection coll as defined by the
+    * Comparator comp. If either coll or comp is null, this method throws an
+    * IllegalArgumentException. If coll is empty or if there is no kth minimum
+    * value, this method throws a NoSuchElementException. This method will not
+    * change coll in any way.
+    *
+    * @param coll    the Collection from which the kth minimum is selected
+    * @param k       the k-selection value
+    * @param comp    the Comparator that defines the total order on T
+    * @return        the kth minimum value in coll
+    * @throws        IllegalArgumentException as per above
+    * @throws        NoSuchElementException as per above
+    */
+   public static <T> T kmin(Collection<T> coll, int k, Comparator<T> comp) {
+     // throw if coll or comp is null
+      if (coll == null || comp == null) {
+         throw new IllegalArgumentException(
+               "coll or comp must not be null");
+      }
+      // throw if coll is empty, use .size() for Collections
+      if (coll.size() == 0) {
+         throw new NoSuchElementException(
+               "coll must not be size 0");
+      }
+      // throw if k < 1, or k > coll.size
+      if (k < 1 || k > coll.size()) {
+         throw new NoSuchElementException(
+            "k must be greater than 1 and less than collection size");
+      }
+     
+     
+     // **not change coll in any way**
+     // can copy into a List, and can then sort the list
+      List<T> list = new ArrayList<T>(coll);
+      java.util.Collections.sort(list, comp);
+     
+     // grab first value with list.get()
+      T kmin = list.get(0);
+      
+      // if k == 1 return
+      if (k == 1) {
+         return kmin;
+      }
+     
+     // count distinctValues *already 1 since grabbed first*
+      int distinctValues = 1;
+     
+     // now scan through list
+      for (T element: list) {
+               // must compare with comp.compare
+         if (comp.compare(element, kmin) != 0) {
+            distinctValues++;
+            kmin = element;
+         }
+         if (distinctValues == k) {
+            return kmin;
+         }
+      }
+     
+     // throw if no kth mimimum value
+      throw new NoSuchElementException(
+         "no kth minimum Value");
+   }
+
+
+   /**
+    * Selects the kth maximum value from the Collection coll as defined by the
+    * Comparator comp. If either coll or comp is null, this method throws an
+    * IllegalArgumentException. If coll is empty or if there is no kth maximum
+    * value, this method throws a NoSuchElementException. This method will not
+    * change coll in any way.
+    *
+    * @param coll    the Collection from which the kth maximum is selected
+    * @param k       the k-selection value
+    * @param comp    the Comparator that defines the total order on T
+    * @return        the kth maximum value in coll
+    * @throws        IllegalArgumentException as per above
+    * @throws        NoSuchElementException as per above
+    */
+   public static <T> T kmax(Collection<T> coll, int k, Comparator<T> comp) {
+     // throw is coll or comp is null
+      if (coll == null || comp == null) {
+         throw new IllegalArgumentException(
+               "coll or comp cant be null");
+      }
+      // throw if coll is empty
+      if (coll.size() == 0) {
+         throw new NoSuchElementException(
+               "coll must not be empty");
+      }
+     // throw if k < 1, or k > coll.size
+      if (k < 1 || k > coll.size()) {
+         throw new NoSuchElementException(
+            "k must be greater than 1 and less than collection size");
+      }
+     
+     
+     
+     // must copy to list and sort
+      List <T> list = new ArrayList<T>(coll);
+      java.util.Collections.sort(list, comp);
+      
+      
+     
+     // Grab last element with .get() since using List
+      T kmax = list.get(list.size() - 1);
+     
+     // Count Distinct Values
+     // already 1 since we grabbed 1st
+      int distinctValues = 1;
+      
+      if (k == 1) {
+         return kmax;
+      }
+     
+     // need to scan backwards here
+      for (int i = list.size() - 2; i >= 0; i--) {
+            // using comparator .compare()
+         if (comp.compare(list.get(i), kmax) < 0) {
+            distinctValues++;
+            kmax = list.get(i);
+         }
+         if (distinctValues == k) {
+            return kmax;
+         }
+      }
+     // throw if no kth maximum value
+      throw new NoSuchElementException(
+         "no kth maximum value");
+   }
+
+
+   /**
+    * Returns a new Collection containing all the values in the Collection coll
+    * that are greater than or equal to low and less than or equal to high, as
+    * defined by the Comparator comp. The returned collection must contain only
+    * these values and no others. The values low and high themselves do not have
+    * to be in coll. Any duplicate values that are in coll must also be in the
+    * returned Collection. If no values in coll fall into the specified range or
+    * if coll is empty, this method throws a NoSuchElementException. If either
+    * coll or comp is null, this method throws an IllegalArgumentException. This
+    * method will not change coll in any way.
+    *
+    * @param coll    the Collection from which the range values are selected
+    * @param low     the lower bound of the range
+    * @param high    the upper bound of the range
+    * @param comp    the Comparator that defines the total order on T
+    * @return        a Collection of values between low and high
+    * @throws        IllegalArgumentException as per above
+    * @throws        NoSuchElementException as per above
+    */
+   public static <T> Collection<T> range(Collection<T> coll, T low, T high,
+                                                     Comparator<T> comp) {
+       // throw coll or comp == null
+      if (coll == null || comp == null) {
+         throw new IllegalArgumentException(
+            "coll or comp must not be null");
+      }                                              
+     // throw if coll is empty
+      if (coll.size() == 0) {
+         throw new NoSuchElementException(
+            "coll must not be empty");
+      }
+      // make a new collection, since method returns a COLLECTION
+      Collection<T> result = new ArrayList<T>();
+      
+      // simple scan through coll and append qualifiers
+      for (T element: coll) {
+         if (comp.compare(element, low) >= 0 && comp.compare(element, high) <= 0) {
+            result.add(element);
+         }
+      }
+      // throw if there are no qualifying values aka result.size() == 0
+      if (result.size() == 0) {
+         throw new NoSuchElementException(
+            "no values meet the criteria");
+      }      
+      
+      return result;   
+   }
+
+
+   /**
+    * Returns the smallest value in the Collection coll that is greater than
+    * or equal to key, as defined by the Comparator comp. The value of key
+    * does not have to be in coll. If coll or comp is null, this method throws
+    * an IllegalArgumentException. If coll is empty or if there is no
+    * qualifying value, this method throws a NoSuchElementException. This
+    * method will not change coll in any way.
+    *
+    * @param coll    the Collection from which the ceiling value is selected
+    * @param key     the reference value
+    * @param comp    the Comparator that defines the total order on T
+    * @return        the ceiling value of key in coll
+    * @throws        IllegalArgumentException as per above
+    * @throws        NoSuchElementException as per above
+    */
+   public static <T> T ceiling(Collection<T> coll, T key, Comparator<T> comp) {
+     
+     // throw if coll or comp are null
+      if (coll == null || comp == null) {
+         throw new IllegalArgumentException(
+            "coll or comp must not be null");
+      }
+     // throw if coll is empty
+      if (coll.size() == 0) {
+         throw new NoSuchElementException(
+            "coll must not be empty");
+      }
+     
+     // can use a boolean like last time to check Yes or No
+      boolean foundCeiling = false;
+     // type variable for lowestCeling
+      T lowestCeiling = null;
+     
+      for (T element: coll) {
+         if (comp.compare(element, key) >= 0) {
+            // if we haven't found a ceiling yet do this
+            if (!foundCeiling) {
+               foundCeiling = true;
+               lowestCeiling = element;
+            }
+            // if we have do this instead
+            else if (comp.compare(element, lowestCeiling) < 0) {
+               lowestCeiling = element;
+            }
+         }   
+      }
+      if (!foundCeiling) {
+         throw new NoSuchElementException(
+            "no qualifying value");
+      }
+      return lowestCeiling;
+   }
+
+
+   /**
+    * Returns the largest value in the Collection coll that is less than
+    * or equal to key, as defined by the Comparator comp. The value of key
+    * does not have to be in coll. If coll or comp is null, this method throws
+    * an IllegalArgumentException. If coll is empty or if there is no
+    * qualifying value, this method throws a NoSuchElementException. This
+    * method will not change coll in any way.
+    *
+    * @param coll    the Collection from which the floor value is selected
+    * @param key     the reference value
+    * @param comp    the Comparator that defines the total order on T
+    * @return        the floor value of key in coll
+    * @throws        IllegalArgumentException as per above
+    * @throws        NoSuchElementException as per above
+    */
+   public static <T> T floor(Collection<T> coll, T key, Comparator<T> comp) {
+     // throw if coll or comp is null
+      if (coll == null || comp == null) {
+         throw new IllegalArgumentException(
+            "coll or comp must not be null");    
+      }
+     // throw if coll is empty use .size() for collection
+      if (coll.size() == 0) {
+         throw new NoSuchElementException(
+            "coll must not be empty");
+      }
+     
+     // need a boolean for Yes or No
+      boolean foundFloor = false;
+     // type variable for highest floor
+      T highestFloor = null;
+     
+     // scan through collection
+      for (T element: coll) {
+         // does it meet criteria?
+         // comapre with key
+         if (comp.compare(element, key) <= 0) {
+            // if we haven't found a floor yet do this
+            if (!foundFloor) {
+               foundFloor = true;
+               highestFloor = element;
+            } 
+            // if we have found floor do this instead
+            // compare with current highestFloor
+            else if (comp.compare(element, highestFloor) > 0) {
+               highestFloor = element;
+            }
+         }
+      }
+      if (!foundFloor) {
+         throw new NoSuchElementException(
+            "no qualifying value");
+      }
+      return highestFloor;
+   }
+   
+   public static void main(String[] args) {
+      Collection<Integer> coll = new ArrayList<Integer>();
+      coll.add(2);
+      coll.add(8);
+      coll.add(7);
+      coll.add(3);
+      
+      Comparator<Integer> ascendingInteger =
+         new Comparator<Integer>() {
+            public int compare(Integer i1, Integer i2) {
+               return i1.compareTo(i2);
+            }
+         };
+     
+      Integer minResult = Selector.min(coll, ascendingInteger);
+      
+      System.out.println("min: " + minResult);
+     
+   }
+
+}
