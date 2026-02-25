@@ -1,0 +1,342 @@
+import java.util.Arrays;
+
+/**
+* Defines a library of selection methods.
+* on arrays of ints.
+*
+* @author   YOUR NAME (YOU@auburn.edu)
+* @author   Michael Mann 
+* @version  01/13/2026
+*
+*/
+public final class Selector {
+
+    /**
+     * Can't instantiate this class.
+     *
+     * D O   N O T   C H A N G E   T H I S   C O N S T R U C T O R
+     *
+     */
+   private Selector() { }
+
+
+    /**
+     * Selects the minimum value from the array a. This method
+     * throws IllegalArgumentException if a is null or has zero
+     * length. The array a is not changed by this method.
+     */
+   public static int min(int[] a) {
+      if (a == null || a.length == 0) {
+         throw new IllegalArgumentException("array must not be null or empty");
+      }
+   
+      // Assign first value in array to variable "min"
+      int min = a[0];
+   
+      // compare first value to each value in the array to find minimum
+      for (int i = 1; i < a.length; i++) {
+         if (a[i] < min) {
+            min = a[i];
+         }
+      }
+      return min;
+   }
+
+
+    /**
+     * Selects the maximum value from the array a. This method
+     * throws IllegalArgumentException if a is null or has zero
+     * length. The array a is not changed by this method.
+     */
+   public static int max(int[] a) {
+      if (a == null || a.length == 0) {
+         throw new IllegalArgumentException("array must not be null or empty");
+      }
+   
+        // Assign first value in array to variable "max"
+      int max = a[0];
+   
+        // Compare first value to each value in array to find maximum
+      for (int i = 1; i < a.length; i++) {
+         if (a[i] > max) {
+            max = a[i];
+         }
+      }
+      return max;
+   }
+
+
+    /**
+     * Selects the kth minimum value from the array a. This method
+     * throws IllegalArgumentException if a is null, has zero length,
+     * or if there is no kth minimum value. Note that there is no kth
+     * minimum value if k < 1, k > a.length, or if k is larger than
+     * the number of distinct values in the array. The array a is not
+     * changed by this method.
+     */
+   public static int kmin(int[] a, int k) {
+      // Throw if a is null or has 0 length
+      if (a == null || a.length == 0) {
+         throw new IllegalArgumentException(
+                "array must not be null or empty"
+            );
+      }
+      // Throw if k < 1 or k > a.length    
+      if (k < 1 || k > a.length) {
+         throw new IllegalArgumentException(
+                "k must be greater than 1 and "
+                + "must be less than array length"
+            );
+      }
+        
+      // Made a copy so I don't permanentley change the array //  
+      int [] copy = Arrays.copyOf(a, a.length);
+      Arrays.sort(copy);
+        
+      int distinctValue = 1;
+      int kmin = copy[0];
+   
+      if (k == 1) {
+         return kmin;
+      }
+        
+      for (int i = 1; i < copy.length; i++) {
+         if (copy[i] != kmin) {
+            distinctValue++;
+            kmin = copy[i];
+                
+            if (distinctValue == k) {
+               return kmin;
+            }
+         }      
+      }
+      // Throw if k is larger than distinct values
+      throw new IllegalArgumentException(
+                "there must be more distinct values than k"
+         );
+   }
+
+
+    /**
+     * Selects the kth maximum value from the array a. This method
+     * throws IllegalArgumentException if a is null, has zero length,
+     * or if there is no kth maximum value. Note that there is no kth
+     * maximum value if k < 1, k > a.length, or if k is larger than
+     * the number of distinct values in the array. The array a is not
+     * changed by this method.
+     */
+   public static int kmax(int[] a, int k) {
+      // Throws if a is null or has 0 length
+      if (a == null || a.length == 0) {
+         throw new IllegalArgumentException(
+            "array must not be null or empty");
+      }
+      // Throws if k < 1 or k > a.length
+      if (k < 1 || k > a.length) {
+         throw new IllegalArgumentException(
+            "k must be greater than 1 " 
+            + "and less than a.length");
+      }
+      
+      // The array a is not changed by this method
+      int[] copy = Arrays.copyOf(a, a.length);
+      // Sort to make it easier
+      Arrays.sort(copy);
+      // Realized we can't use another import statement, so need to start at LAST Value after sorting
+      int lastValue = copy.length - 1;
+      int kmax = copy[lastValue];
+      int distinctValue = 1; // 1 because we already grabbed the first value
+      
+      // if k is 1 just return copy[lastValue]
+      if (k == 1) {
+         return kmax;
+      }
+      
+      // Since we are starting at end of the array, need to work backwards
+      for (int i = copy.length - 2; i >= 0; i--) {
+         if (copy[i] != kmax) {
+            distinctValue++;
+            kmax = copy[i];
+            
+            if (distinctValue == k) {
+               return kmax;
+            } 
+         }
+      }
+      // If distinctValues never == k the loop will finish and we end up here
+      // Throw if k is larger than distinctValue
+      throw new IllegalArgumentException(
+         "there must be more distinctValue than k");
+   }
+
+
+    /**
+     * Returns an array containing all the values in a in the
+     * range [low..high]; that is, all the values that are greater
+     * than or equal to low and less than or equal to high,
+     * including duplicate values. The length of the returned array
+     * is the same as the number of values in the range [low..high].
+     * If there are no qualifying values, this method returns a
+     * zero-length array. Note that low and high do not have
+     * to be actual values in a. This method throws an
+     * IllegalArgumentException if a is null or has zero length.
+     * The array a is not changed by this method.
+     */
+   public static int[] range(int[] a, int low, int high) {
+      // Throw if a == null or has 0 length
+      if (a == null || a.length == 0) {
+         throw new IllegalArgumentException(
+            "array must not be null or empty");
+      }
+      // Arrays can't change their length after creation, must create a new array
+      // Let me loop through the array and create a count to see how many values meet the criteria
+      int count = 0;
+      
+      
+      // Returns >= low ***AND*** <= high
+      // Includes duplicates so distinctValues don't matter
+      for (int i = 0; i < a.length; i++) {
+         if (a[i] >= low && a[i] <= high) {
+            count++;
+         } 
+         
+      }
+      // Rule: **The array is not changed by this method**
+      // Rule: **Length of returned array is the same as number of values in the range [low. .high]**
+      // now create a new array a copy with count 
+      int[] filteredArray = new int[count];
+      
+      // if no qualifying values return a zero-length array
+      if (count == 0) {
+         return filteredArray;
+      }
+      
+      // maybe create another for loop to now append same criteria to filteredArray
+      // would need a seperate index counter for filteredArray
+      int index = 0;
+      for (int i = 0; i < a.length; i++) {
+         if (a[i] >= low && a[i] <= high) {
+            filteredArray[index++] = a[i];
+         }
+      }
+      
+      return filteredArray;   
+   }
+
+
+    /**
+     * Returns the smallest value in a that is greater than or equal to
+     * the given key. This method throws an IllegalArgumentException if
+     * a is null or has zero length, or if there is no qualifying
+     * value. Note that key does not have to be an actual value in a.
+     * The array a is not changed by this method.
+     */
+   public static int ceiling(int[] a, int key) {
+     // Throw if a is null or has 0 length
+      if (a == null || a.length == 0) {
+         throw new IllegalArgumentException(
+            "array must not be null or empty");
+      }
+     
+     // scan the array and find a candidate that meets criteria
+      boolean foundCeiling = false;
+      int lowestCeiling = 0;
+      
+     // loop through array
+      for (int i = 0; i < a.length; i++) {
+         // if greater or equal to
+         if (a[i] >= key) {
+            // we found a candidate, now we can initialize
+            if (!foundCeiling) {
+               lowestCeiling = a[i];
+               foundCeiling = true;
+            }
+            // once found = true now we can compare to find the lowest
+            else if (a[i] < lowestCeiling) {
+               lowestCeiling = a[i];
+            }
+         }
+           
+      }
+      // Throw if no qualifying value
+      if (!foundCeiling) {
+         throw new IllegalArgumentException("no qualifying value");
+      }
+      return lowestCeiling;
+   }
+      // Notes on ceiling //
+      // Initially i tried if a[i] <= key, subtract from key and keep the lowest
+      // But i kept running into overriding temporary variable issues
+      // a boolean allows "Have I found a candidate?"
+      // if yes, thats my best Candidate thus far
+      // if i find another candidate i can compare it to current best
+      // Notes on ceiling // 
+
+
+    /**
+     * Returns the largest value in a that is less than or equal to
+     * the given key. This method throws an IllegalArgumentException if
+     * a is null or has zero length, or if there is no qualifying
+     * value. Note that key does not have to be an actual value in a.
+     * The array a is not changed by this method.
+     */
+   public static int floor(int[] a, int key) {
+     // Throw if a is null or empty
+      if (a == null || a.length == 0) {
+         throw new IllegalArgumentException(
+            "array must not be null or empty");
+      }
+      
+      // scan the array and find a value that meets the criteria
+      // Does this value meet the criteria? Yes or No?
+      boolean foundFloor = false;
+      int highestFloor = 0;
+      
+      // loop through each value in the array
+      for (int i = 0; i < a.length; i++) {
+         // Criteria Check
+         if (a[i] <= key) {
+            // Have we found a qualifying floor yet?
+            // If not do this
+            if (!foundFloor) {
+               highestFloor = a[i];
+               foundFloor = true;
+            }
+            // If we have do this instead
+            else if (a[i] > highestFloor) {
+               highestFloor = a[i];
+            }
+         }
+      }
+      // Throw if no qualifying value found
+      if (!foundFloor) {
+         throw new IllegalArgumentException(
+            "no qualifying value.");
+      }
+      return highestFloor;
+   }
+   
+   public static int removeDuplicates(int[] nums) {
+      int duplicateValues = 0;
+      int indexSlider = 0;
+      
+      for (int i = 1; i < nums.length; i++) {
+         if (nums[i] == nums[i - 1]) {
+            nums[indexSlider] = nums[i];
+            indexSlider++;
+            duplicateValues++;
+         }
+      }
+      return duplicateValues;
+     
+   }
+   
+   public static void main(String[] args) {
+      int[] nums = {1, 1, 2, 3, 4, 4};
+      
+      int check = removeDuplicates(nums);
+      System.out.println(check);
+      System.out.println(Arrays.toString(nums));
+   }
+
+}
