@@ -59,7 +59,3 @@ Selector.ceiling(list, 5, comp); // 7
 - `java.util.Collections`, `java.util.Comparator` (collection-selector)
 
 ---
-
-## Course
-**COMP 2210 – Data Structures and Algorithms**  
-Auburn University
