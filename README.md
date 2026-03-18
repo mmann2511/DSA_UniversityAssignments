@@ -1,6 +1,6 @@
 # DSA Selector
 
-Two implementations of a `Selector` utility class built as part of a Data Structures & Algorithms course at Auburn University. Both implementations provide the same core selection operations — the key difference is the underlying data type each works with.
+Two implementations of a `Selector` utility class. Both implementations provide the same core selection operations — the key difference is the underlying data type each works with.
 
 ---
 
